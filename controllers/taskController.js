@@ -17,3 +17,22 @@ exports.getProjects = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
+
+exports.getDesignations = async (req, res) => {
+  try {
+    const designations = await Designation.findAll({
+      attributes: ["id", "name"],
+      raw: true,
+    });
+    if (!designations) {
+      return res
+        .status(400)
+        .json({ status: false, message: "No designations found" });
+    }
+
+    return res.status(200).json({ status: true, data: designations });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
