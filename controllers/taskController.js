@@ -1,4 +1,4 @@
-const { User, Designation, Project } = require("../models/index");
+const { User, Designation, Project, Status } = require("../models/index");
 
 exports.getProjects = async (req, res) => {
   try {
@@ -31,6 +31,25 @@ exports.getDesignations = async (req, res) => {
     }
 
     return res.status(200).json({ status: true, data: designations });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
+
+exports.getStatuses = async (req, res) => {
+  try {
+    const statuses = await Status.findAll({
+      attributes: ["id", "name"],
+      raw: true,
+    });
+    if (!statuses) {
+      return res
+        .status(400)
+        .json({ status: false, message: "No designations found" });
+    }
+
+    return res.status(200).json({ status: true, data: statuses });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Internal server error", error: e });
