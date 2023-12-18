@@ -1,4 +1,5 @@
-const { User, Designation, Project, Status } = require("../models/index");
+const { User, Designation, Project, Status, Task } = require("../models/index");
+const { toNumber } = require("lodash");
 
 exports.getProjects = async (req, res) => {
   try {
@@ -52,6 +53,92 @@ exports.getStatuses = async (req, res) => {
     return res.status(200).json({ status: true, data: statuses });
   } catch (e) {
     console.error(e);
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
+
+exports.createTask = async (req, res) => {
+  try {
+    const {
+      project_id,
+      designation_id,
+      task_details,
+      start_date,
+      estimate_hours,
+      status_id,
+      hour_taken,
+      end_date,
+      comments,
+      attachment_url,
+    } = req.body;
+
+    const { user } = req;
+
+    // Validate required fields
+    if (
+      !project_id ||
+      !designation_id ||
+      !task_details ||
+      !start_date ||
+      !estimate_hours ||
+      !status_id
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Create the task in the database
+    const newTask = await Task.create({
+      project_id,
+      designation_id,
+      task_details,
+      start_date,
+      estimate_hours,
+      status_id,
+      hour_taken,
+      end_date,
+      comments,
+      attachment_url,
+      user_id: toNumber(user?.userId),
+    });
+    if (!newTask) {
+      return res
+        .status(500)
+        .json({ status: false, message: "Error creating task" });
+    }
+
+    // Respond with the created task
+    return res.status(200).json({
+      status: true,
+      message: "Task created successfully",
+      data: newTask,
+    });
+  } catch (e) {
+    console.error(e);
+    res
+      .status(500)
+      .json({ status: false, message: "Internal server error", error: e });
+  }
+};
+
+exports.getTaskByUser = async (req, res) => {
+  try {
+    const { user } = req;
+    console.log(user?.userId);
+    const tasks = await Task.findAll({
+      where: { user_id: user?.userId },
+      // include: ["User", "Designation", "Project", "Status"],
+      include: [
+        { model: User },
+        { model: Project },
+        { model: Designation },
+        { model: Status },
+      ],
+    });
+    if (!tasks) {
+      return res.status(400).json({ message: "Not Found" });
+    }
+    return res.status(200).json({ user: user, tasks: tasks });
+  } catch (e) {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
