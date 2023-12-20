@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       // this.belongsTo(models.Task, {
       //   foreignKey: "user_id",
       // });
+      this.belongsTo(models.Role, {
+        foreignKey: "role_id",
+      });
     }
   }
   User.init(
