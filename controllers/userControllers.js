@@ -1,4 +1,4 @@
-const { User } = require("../models/index");
+const { User, Role } = require("../models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -39,7 +39,10 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: [{ model: Role }],
+    });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }

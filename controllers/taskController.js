@@ -133,6 +133,7 @@ exports.getTaskByUser = async (req, res) => {
         { model: Designation },
         { model: Status },
       ],
+      order: [["createdAt", "DESC"]],
     });
     if (!tasks) {
       return res.status(400).json({ message: "Not Found" });
