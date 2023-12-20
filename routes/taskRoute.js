@@ -9,5 +9,6 @@ router.get("/statuses", authenticateToken, taskController.getStatuses);
 router.post("/create", authenticateToken, taskController.createTask);
 router.get("/getTaskByUser", authenticateToken, taskController.getTaskByUser);
 router.get("/getTaskById/:id", authenticateToken, taskController.getTaskById);
+router.post("/editTask/:id", authenticateToken, taskController.editTask);
 
 module.exports = router;

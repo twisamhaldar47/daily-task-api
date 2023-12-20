@@ -165,3 +165,62 @@ exports.getTaskById = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
+
+exports.editTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      project_id,
+      designation_id,
+      task_details,
+      start_date,
+      estimate_hours,
+      status_id,
+      hour_taken,
+      end_date,
+      comments,
+      attachment_url,
+    } = req.body;
+    const { user } = req;
+    if (
+      !project_id ||
+      !designation_id ||
+      !task_details ||
+      !start_date ||
+      !estimate_hours ||
+      !status_id
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const updatedTask = await Task.update(
+      {
+        project_id,
+        designation_id,
+        task_details,
+        start_date,
+        estimate_hours,
+        status_id,
+        hour_taken,
+        end_date,
+        comments,
+        attachment_url,
+      },
+      {
+        where: {
+          id: id,
+        },
+      },
+    );
+    if (!updatedTask) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Error Updating Task" });
+    }
+    return res
+      .status(200)
+      .json({ status: true, message: "Task updated successfully" });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
