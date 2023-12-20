@@ -8,5 +8,6 @@ router.get("/designations", authenticateToken, taskController.getDesignations);
 router.get("/statuses", authenticateToken, taskController.getStatuses);
 router.post("/create", authenticateToken, taskController.createTask);
 router.get("/getTaskByUser", authenticateToken, taskController.getTaskByUser);
+router.get("/getTaskById/:id", authenticateToken, taskController.getTaskById);
 
 module.exports = router;

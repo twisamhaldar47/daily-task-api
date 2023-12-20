@@ -142,3 +142,26 @@ exports.getTaskByUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
+
+exports.getTaskById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findOne({
+      where: {
+        id: id,
+      },
+      include: [
+        { model: User },
+        { model: Project },
+        { model: Designation },
+        { model: Status },
+      ],
+    });
+    if (!task) {
+      return res.status(400).json({ message: "Not Found" });
+    }
+    return res.status(200).json({ task: task });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
