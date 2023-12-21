@@ -225,3 +225,27 @@ exports.editTask = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
+
+exports.getTasksForAdmin = async (req, res) => {
+  try {
+    const { user } = req;
+    // console.log(user);
+    if (user?.user_role !== "Admin") {
+      return res
+        .status(401)
+        .json({ status: false, message: "Unauthorized Access" });
+    }
+    const allTasks = await Task.findAll({
+      include: [
+        { model: User },
+        { model: Project },
+        { model: Designation },
+        { model: Status },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+    res.status(200).json({ status: true, data: allTasks });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};

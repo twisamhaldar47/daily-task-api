@@ -10,5 +10,10 @@ router.post("/create", authenticateToken, taskController.createTask);
 router.get("/getTaskByUser", authenticateToken, taskController.getTaskByUser);
 router.get("/getTaskById/:id", authenticateToken, taskController.getTaskById);
 router.post("/editTask/:id", authenticateToken, taskController.editTask);
+router.get(
+  "/getTaskAsAdmin",
+  authenticateToken,
+  taskController.getTasksForAdmin,
+);
 
 module.exports = router;
