@@ -15,5 +15,6 @@ router.get(
   authenticateToken,
   taskController.getTasksForAdmin,
 );
+router.post("/deleteTask/:id", authenticateToken, taskController.deleteTask);
 
 module.exports = router;

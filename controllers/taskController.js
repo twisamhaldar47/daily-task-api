@@ -249,3 +249,27 @@ exports.getTasksForAdmin = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: e });
   }
 };
+
+exports.deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req;
+
+    if (user?.user_role !== "Admin") {
+      return res
+        .status(401)
+        .json({ status: false, message: "Unauthorized Access" });
+    }
+    const deleteTask = await Task.destroy({
+      where: {
+        id: id
+      }
+    });
+    if (!deleteTask) {
+      return res .status(400) .json({ status: false, message: "Error Deleting Task" });
+    }
+    res.status(200).json({ status:true, message: "Deleted Successfully" });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error", error: e });
+  }
+};
